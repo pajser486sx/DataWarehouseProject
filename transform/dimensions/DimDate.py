@@ -8,7 +8,6 @@ from spark_session import get_spark_session
 def transform_date_dim(csv_df):
     spark = get_spark_session()
 
-    # --- Korak 1: Izdvajanje unikatnih datuma ---
     unique_dates_df = (
         csv_df
         .select(to_date(col("signup_date")).alias("full_date"))
@@ -16,7 +15,6 @@ def transform_date_dim(csv_df):
         .distinct()
     )
 
-    # --- Korak 2: Ekstrakcija kalendarskih atributa ---
     processed_df = (
         unique_dates_df
         .withColumn("year", year(col("full_date")).cast("integer"))
@@ -26,7 +24,6 @@ def transform_date_dim(csv_df):
         .withColumn("day_name", date_format(col("full_date"), "EEEE"))
     )
 
-    # --- Korak 3: Dodavanje Surogatnog ključa ---
     window = Window.orderBy("full_date")
 
     final_df = (

@@ -8,7 +8,6 @@ from spark_session import get_spark_session
 def transform_engagement_dim(csv_df):
     spark = get_spark_session()
 
-    # --- Korak 1: Izdvajanje unikatnih profila angažmana ---
     distinct_eng_df = (
         csv_df
         .select(
@@ -19,7 +18,6 @@ def transform_engagement_dim(csv_df):
         .dropDuplicates()
     )
 
-    # --- Korak 2: Generiranje surogatnog ključa ---
     window = Window.orderBy("device_name", "ad_interaction", "most_liked_feature")
 
     final_df = (

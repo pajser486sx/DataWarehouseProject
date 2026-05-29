@@ -20,7 +20,6 @@ def transform_country_dim(mysql_country_df):
         'Australia': 'Oceania', 'New Zealand': 'Oceania'
     }
 
-    # --- Korak 1: Normalizacija i čišćenje naziva ---
     base_df = (
         mysql_country_df
         .select(
@@ -30,15 +29,13 @@ def transform_country_dim(mysql_country_df):
         .dropDuplicates(["name"])
     )
 
-    # --- Korak 2: Mapiranje kontinenata u Sparku (umjesto spore .map() metode) ---
-    mapping_expr = when(lit(False), None)  # Bazni uvjet
+    mapping_expr = when(lit(False), None)
     for country, continent in continent_map.items():
         mapping_expr = mapping_expr.when(col("name") == country, lit(continent))
     mapping_expr = mapping_expr.otherwise(lit("Unknown"))
 
     combined_df = base_df.withColumn("continent", mapping_expr)
 
-    # --- Korak 3: Dodavanje Surogatnog ključa (SCD Type 2) ---
     window = Window.orderBy("name")
 
     final_df = (

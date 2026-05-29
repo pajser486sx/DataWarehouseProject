@@ -1,7 +1,6 @@
 from pyspark.sql import DataFrame
 
 def write_spark_df_to_mysql(spark_df: DataFrame, table_name: str, mode: str = "overwrite"):
-    # URL tvoje baze - provjeri da se baza stvarno zove 'dw'
     jdbc_url = "jdbc:mysql://127.0.0.1:3306/spotify_dw?useSSL=false"
     
     connection_properties = {

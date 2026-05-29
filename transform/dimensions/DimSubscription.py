@@ -8,7 +8,6 @@ from spark_session import get_spark_session
 def transform_subscription_dim(csv_df):
     spark = get_spark_session()
 
-    # --- Korak 1: Izdvajanje unikatnih kombinacija pretplata ---
     distinct_sub_df = (
         csv_df
         .select(
@@ -18,7 +17,6 @@ def transform_subscription_dim(csv_df):
         .dropDuplicates()
     )
 
-    # --- Korak 2: Dodavanje ID-eva i SCD2 stupaca ---
     window = Window.orderBy("type_name", "status")
 
     final_df = (
